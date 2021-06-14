@@ -2,18 +2,12 @@ package syntax;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Iterator;
 
 public class MainFrame extends JFrame{
-    // 输入text
     JTextArea inputText;
-
-    // 输出text
     JTextArea outputText;
-
-    // 开始分析按钮
     JButton startButton;
-
-    // 清除按钮
     JButton clearButton;
 
     {
@@ -35,5 +29,10 @@ public class MainFrame extends JFrame{
         this.add(clearButton);
         this.setBounds(200,200,900,700);
         this.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        LexicalAnalyzer.lexicalAnalyal(".\\test.txt");
+        SyntaxAnalyzer.syntaxAnalyzer(".\\input.txt",".\\output.txt");
     }
 }

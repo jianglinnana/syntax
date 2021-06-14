@@ -1,0 +1,21 @@
+#include<iostream>
+using namespace std;
+void main(){
+    int id1,id3;
+    char id2;
+    double id4;
+    id1 = 5;
+    id3 = 0;
+    id2 = 96;
+    while(id3<5){
+        id3 = id3 + 1;
+    }
+    if(id3 == 5){
+        id1 = 2;
+        id3 = 0;
+        id4 = 0;
+    }else{
+        id1 = 6;
+        id2 = id1 - id3;
+    }
+}
