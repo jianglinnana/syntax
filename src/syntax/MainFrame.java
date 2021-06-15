@@ -54,6 +54,7 @@ public class MainFrame extends JFrame{
         this.add(panel3);
         this.setBounds(200,200,1200,1000);
         this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public static void main(String[] args) {
