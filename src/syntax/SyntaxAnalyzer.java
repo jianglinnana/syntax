@@ -12,6 +12,7 @@ public class SyntaxAnalyzer {
     private static Production[] productions = new Production[43];
     private static HashMap<Integer, String> map_i2s;
     private static HashMap<String, Integer> map_s2i;
+    static StringBuffer outputBuffer = new StringBuffer();
 
 
     public static void syntaxAnalyzer(String inputFilePath, String outputFilePath) {
@@ -31,7 +32,7 @@ public class SyntaxAnalyzer {
 
         reader.add(map_s2i.get("$"));
         while (stackTop >= 0) {
-            outputBuffer.append("第" + index + "步:      当前栈:");
+            outputBuffer.append("第" + ++index + "步:      当前栈:");
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i <= stackTop; i++) {
                 String str = null;
@@ -82,6 +83,88 @@ public class SyntaxAnalyzer {
             writer.write(outputBuffer.toString());
         } catch (IOException e1) {
             e1.printStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    public static StringBuffer getoutBuffer(String inputFilePath, String outputFilePath) {
+        int stackTop = 1;
+        int readerTop = 0;
+        int index = 0;
+        initMap();
+        initProductions();
+        stack.add(0, String.valueOf(map_s2i.get("$")));
+        stack.add(stackTop, "W");
+//        StringBuffer outputBuffer = new StringBuffer();
+        try {
+            readToReader(inputFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        reader.add(map_s2i.get("$"));
+        while (stackTop >= 0) {
+            outputBuffer.append("第" + index + "步:      当前栈:");
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i <= stackTop; i++) {
+                String str = null;
+                try {
+                    str = map_i2s.get(Integer.valueOf(stack.get(i)));
+                    if (str != null) {
+                        sb.append(str + " ");
+                        outputBuffer.append(str + " ");
+                    }
+                }catch (NumberFormatException e){
+                    sb.append(stack.get(i)+" ");
+                    outputBuffer.append(stack.get(i)+" ");
+                }
+            }
+            System.out.printf("%-30s", sb.toString());
+            System.out.print("待读队列：");
+            outputBuffer.append("             待读队列：");
+            sb = new StringBuffer();
+            for (int i = 0; i < reader.size(); i++) {
+                sb.append(map_i2s.get(reader.get(i)) + " ");
+                outputBuffer.append(map_i2s.get(reader.get(i)) + " ");
+            }
+            System.out.printf("%-55s", sb.toString());
+            if (match(stackTop, readerTop)) {
+                stackTop--;
+                System.out.print("\n");
+                outputBuffer.append("\n");
+            } else {
+                int i = ll1_table(stackTop, readerTop);
+                stackTop += stackPush(stackTop, productions[i]); // 压栈
+                System.out.printf("%-30s", "下一步所用产生式：" + productions[i].prod);
+                System.out.println();
+                outputBuffer.append("         下一步所用产生式：" + productions[i].prod + "\n");
+            }
+        }
+        if (stackTop == -1) {
+            System.out.println("语法分析成功");
+            outputBuffer.append("Accept");
+            save(outputFilePath);
+            return outputBuffer;
+        }else {
+            return new StringBuffer("语法分析错误");
+        }
+    }
+
+    public static void save(String outputFilePath){
+        File file = new File(outputFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
+        PrintWriter writer = null;
+        try {
+            file.createNewFile();
+            writer = new PrintWriter(new FileOutputStream(file));
+            writer.write(outputBuffer.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             if (writer != null) {
                 writer.close();

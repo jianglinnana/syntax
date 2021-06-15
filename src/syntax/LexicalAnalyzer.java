@@ -1,7 +1,6 @@
 package syntax;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Scanner;
 
 public class LexicalAnalyzer {
@@ -126,17 +125,51 @@ public class LexicalAnalyzer {
         delimiter[11] = new String[]{"\"", "312"};
     }
 
-    public static void lexicalAnalyal(String filepath) {
-        File file = new File(filepath);
+    public static StringBuffer lexicalAnalyal(String inputFilePath, String outputFilePath) {
+        File file = new File(inputFilePath);
         int lines = 1;
-        try(Scanner input = new Scanner(file)) {
-            while(input.hasNextLine()){
+        try (Scanner input = new Scanner(file)) {
+            while (input.hasNextLine()) {
                 String s = input.nextLine();
                 analyze(s);
                 lines++;
             }
+            save(outputFilePath);
+            return outputBuffer;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return new StringBuffer("词法分析错误");
+        }
+    }
+
+    public static StringBuffer getInputText(String str,String outputFilePath) {
+        int lines = 1;
+        try {
+            analyze(str);
+            save(outputFilePath);
+            return outputBuffer;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new StringBuffer("词法分析错误");
+        }
+    }
+
+    public static void save(String outputFilePath) {
+        File file = new File(outputFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
+        PrintWriter writer = null;
+        try {
+            file.createNewFile();
+            writer = new PrintWriter(new FileOutputStream(file));
+            writer.write(outputBuffer.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 
@@ -177,14 +210,14 @@ public class LexicalAnalyzer {
                 } else if (ch == ' ') {
 
                 } else {
-                    outputBuffer.append("(id," + ch);
+
                 }
 
                 p++;
 
             }
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -196,7 +229,7 @@ public class LexicalAnalyzer {
         if (ch == '=') {
             token.append(ch);
         }
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
 //        p--;
     }
 
@@ -206,7 +239,7 @@ public class LexicalAnalyzer {
         if (ch == '&') {
             token.append(ch);
         }
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
 
     }
 
@@ -216,7 +249,7 @@ public class LexicalAnalyzer {
         if (ch == '|') {
             token.append(ch);
         }
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
     }
 
     public static void checkExceptOperator(String str) {
@@ -224,11 +257,11 @@ public class LexicalAnalyzer {
         char ch = str.charAt(p);
         if (ch == '*') {
             token.append(ch);
-            outputBuffer.append(checkDelimiters(token) + "," + token);
+            outputBuffer.append(checkDelimiters(token) + "," + token + "\n");
         }
         if (ch == '/' || ch == '=') {
             token.append(ch);
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         }
 
     }
@@ -238,11 +271,11 @@ public class LexicalAnalyzer {
         char ch = str.charAt(p);
         if (ch == '=') {
             token.append(ch);
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         }
         if (ch == '/') {
             token.append(ch);
-            outputBuffer.append(checkDelimiters(token) + "," + token);
+            outputBuffer.append(checkDelimiters(token) + "," + token + "\n");
         }
 
     }
@@ -251,7 +284,7 @@ public class LexicalAnalyzer {
         StringBuilder token = new StringBuilder(String.valueOf(str.charAt(p++)));
         char ch;
         if (p == str.length()) {
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
             return;
         }
         ch = str.charAt(p);
@@ -267,7 +300,7 @@ public class LexicalAnalyzer {
                 token.append(str.charAt(p));
             }
         }
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
         p--;
 
 
@@ -285,20 +318,20 @@ public class LexicalAnalyzer {
             token.append(ch);
             p++;
         }
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
         p--;
     }
 
     public static void checkOperatorSingle(String str) {
         StringBuilder token = new StringBuilder(String.valueOf(str.charAt(p)));
-        outputBuffer.append(checkOperator(token) + "," + token);
+        outputBuffer.append(checkOperator(token) + "," + token + "\n");
     }
 
     public static void checkDelimiter(String str) {
         StringBuilder token = new StringBuilder(String.valueOf(str.charAt(p)));
         for (int i = 0; i < 12; i++) {
             if (delimiter[i][0].contentEquals(token)) {
-                outputBuffer.append(delimiter[i][1] + "," + token);
+                outputBuffer.append(delimiter[i][1] + "," + token + "\n");
             }
         }
     }
@@ -316,18 +349,18 @@ public class LexicalAnalyzer {
         StringBuilder token = new StringBuilder(String.valueOf(str.charAt(p++)));
         char ch = str.charAt(p);
         if (ch != '+' && ch != '-' && ch != '=') {
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         } else if (ch == '=') {
             token.append(ch);
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         } else if (ch == str.charAt(p - 1) && ch == '+') {
             token.append(ch);
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         } else if (ch == str.charAt(p - 1) && ch == '-') {
             token.append(ch);
-            outputBuffer.append(checkOperator(token) + "," + token);
+            outputBuffer.append(checkOperator(token) + "," + token + "\n");
         } else {
-//            outputBuffer.append()("(id," + token);
+
         }
     }
 
@@ -355,7 +388,7 @@ public class LexicalAnalyzer {
         }
         Integer integer = Integer.valueOf(String.valueOf(token));
         String s = Integer.toString(integer, 2);
-        outputBuffer.append("200," + s);
+        outputBuffer.append("200," + s + "\n");
         p--;
     }
 
@@ -389,7 +422,7 @@ public class LexicalAnalyzer {
             }
             p++;
         }
-        outputBuffer.append(checkKeyWord(token) + "," + token);
+        outputBuffer.append(checkKeyWord(token) + "," + token + "\n");
         p--;
     }
 }
