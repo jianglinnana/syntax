@@ -125,23 +125,6 @@ public class LexicalAnalyzer {
         delimiter[11] = new String[]{"\"", "312"};
     }
 
-    public static StringBuffer lexicalAnalyal(String inputFilePath, String outputFilePath) {
-        File file = new File(inputFilePath);
-        int lines = 1;
-        try (Scanner input = new Scanner(file)) {
-            while (input.hasNextLine()) {
-                String s = input.nextLine();
-                analyze(s);
-                lines++;
-            }
-            save(outputFilePath);
-            return outputBuffer;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new StringBuffer("词法分析错误");
-        }
-    }
-
     public static StringBuffer getInputText(String str,String outputFilePath) {
         int lines = 1;
         try {
