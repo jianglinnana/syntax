@@ -408,4 +408,8 @@ public class LexicalAnalyzer {
         outputBuffer.append(checkKeyWord(token) + "," + token + "\n");
         p--;
     }
+
+    public static void clear(){
+        outputBuffer = new StringBuffer();
+    }
 }

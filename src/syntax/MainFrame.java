@@ -60,19 +60,33 @@ public class MainFrame extends JFrame{
         mainFrame.lexicalButton.addActionListener(e -> {
             mainFrame.inputText.setText("");
             String str = mainFrame.testText.getText();
-            StringBuffer stringBuffer = LexicalAnalyzer.getInputText(str,".\\input.txt");
-            mainFrame.inputText.setText(stringBuffer.toString());
+            try{
+                StringBuffer stringBuffer = LexicalAnalyzer.getInputText(str,".\\input.txt");
+                mainFrame.inputText.setText(stringBuffer.toString());
+            }catch (Exception exception){
+                exception.printStackTrace();
+                mainFrame.inputText.setText("词法分析错误");
+                LexicalAnalyzer.clear();
+            }
+
         });
         mainFrame.syntaxButton.addActionListener(e -> {
             mainFrame.outputText.setText("");
-            StringBuffer stringBuffer = SyntaxAnalyzer.getoutBuffer(".\\input.txt", ".\\output.txt");
-            mainFrame.outputText.setText(stringBuffer.toString());
+            try{
+                StringBuffer stringBuffer = SyntaxAnalyzer.getoutBuffer(".\\input.txt", ".\\output.txt");
+                mainFrame.outputText.setText(stringBuffer.toString());
+            }catch (Exception exception){
+                exception.printStackTrace();
+                mainFrame.outputText.setText("语法分析不正确");
+                SyntaxAnalyzer.clear();
+            }
+
         });
         mainFrame.clearButton.addActionListener(e -> {
             mainFrame.outputText.setText("");
             mainFrame.inputText.setText("");
-            LexicalAnalyzer.outputBuffer = new StringBuffer();
-            SyntaxAnalyzer.outputBuffer = new StringBuffer();
+            LexicalAnalyzer.clear();
+            SyntaxAnalyzer.clear();
         });
     }
 }

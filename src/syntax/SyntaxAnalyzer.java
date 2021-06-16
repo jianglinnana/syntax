@@ -565,4 +565,8 @@ public class SyntaxAnalyzer {
             this.prod = prod;
         }
     }
+
+    public static void clear(){
+        outputBuffer = new StringBuffer();
+    }
 }
