@@ -2,8 +2,6 @@ package syntax;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame{
     JTextArea testText;
@@ -67,18 +65,14 @@ public class MainFrame extends JFrame{
         });
         mainFrame.syntaxButton.addActionListener(e -> {
             mainFrame.outputText.setText("");
-            String str = mainFrame.inputText.getText();
             StringBuffer stringBuffer = SyntaxAnalyzer.getoutBuffer(".\\input.txt", ".\\output.txt");
             mainFrame.outputText.setText(stringBuffer.toString());
         });
-        mainFrame.clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.outputText.setText("");
-                mainFrame.inputText.setText("");
-                LexicalAnalyzer.outputBuffer = new StringBuffer();
-                SyntaxAnalyzer.outputBuffer = new StringBuffer();
-            }
+        mainFrame.clearButton.addActionListener(e -> {
+            mainFrame.outputText.setText("");
+            mainFrame.inputText.setText("");
+            LexicalAnalyzer.outputBuffer = new StringBuffer();
+            SyntaxAnalyzer.outputBuffer = new StringBuffer();
         });
     }
 }
