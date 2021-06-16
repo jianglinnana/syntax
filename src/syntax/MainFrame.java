@@ -76,8 +76,8 @@ public class MainFrame extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 mainFrame.outputText.setText("");
                 mainFrame.inputText.setText("");
-                LexicalAnalyzer.outputBuffer = new StringBuffer("");
-                SyntaxAnalyzer.outputBuffer = new StringBuffer("");
+                LexicalAnalyzer.outputBuffer = new StringBuffer();
+                SyntaxAnalyzer.outputBuffer = new StringBuffer();
             }
         });
     }
